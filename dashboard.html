@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYLVARQ AI | Dashboard</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #090909;
+  color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 24px 7%;
+  border-bottom: 1px solid #292929;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 5px;
+}
+
+.demo {
+  color: #aaa;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+main {
+  max-width: 1100px;
+  margin: 55px auto;
+  padding: 0 22px;
+}
+
+.eyebrow {
+  color: #999;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  font-size: clamp(30px, 5vw, 48px);
+  margin: 12px 0 35px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 35px;
+}
+
+.stat, .panel {
+  background: #141414;
+  border: 1px solid #292929;
+  border-radius: 8px;
+  padding: 23px;
+}
+
+.stat p {
+  color: #999;
+  font-size: 13px;
+}
+
+.stat strong {
+  font-size: 34px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+input, select {
+  background: #171717;
+  color: white;
+  border: 1px solid #383838;
+  border-radius: 5px;
+  padding: 12px;
+}
+
+input { flex: 1; min-width: 180px; }
+
+.panel h2 {
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+th, td {
+  text-align: left;
+  padding: 17px 12px;
+  border-bottom: 1px solid #292929;
+  font-size: 13px;
+}
+
+th {
+  color: #999;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.status {
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 7px;
+}
+
+.note {
+  color: #888;
+  font-size: 12px;
+  margin-top: 25px;
+  line-height: 1.7;
+}
+
+footer {
+  padding: 30px 7%;
+  color: #777;
+  border-top: 1px solid #292929;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 650px) {
+  .stats { grid-template-columns: 1fr; }
+  main { margin-top: 35px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">SYLVARQ</div>
+  <div class="demo">AI / MANAGEMENT SYSTEM</div>
+</header>
+
+<main>
+  <div class="eyebrow">CLEANING BUSINESS AUTOMATION</div>
+  <h1>Booking Overview</h1>
+
+  <section class="stats">
+    <div class="stat">
+      <p>Total Requests</p>
+      <strong id="total">1</strong>
+    </div>
+    <div class="stat">
+      <p>Pending</p>
+      <strong id="pending">1</strong>
+    </div>
+    <div class="stat">
+      <p>Confirmed</p>
+      <strong id="confirmed">0</strong>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Customer Bookings</h2>
+
+    <div class="toolbar">
+      <input id="search" placeholder="Search customer or service...">
+
+      <select id="filter">
+        <option value="All">All bookings</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>CUSTOMER</th>
+            <th>SERVICE</th>
+            <th>DATE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="bookings"></tbody>
+      </table>
+    </div>
+
+    <p class="note" id="message"></p>
+  </section>
+
+  <p class="note">
+    DEMONSTRATION VERSION — Sample booking information only.
+    Live Google Forms and Google Sheets integration will be added
+    in a future development stage.
+  </p>
+</main>
+
+<footer>
+  SYLVARQ AI · BUILT BEYOND LIMITS
+</footer>
+
+<script>
+const bookingData = [
+  {
+    name: "Demo Customer",
+    service: "Deep Cleaning",
+    date: "Sample Date",
+    status: "Pending"
+  }
+];
+
+const bookings = document.getElementById("bookings");
+const search = document.getElementById("search");
+const filter = document.getElementById("filter");
+
+function render() {
+  const query = search.value.toLowerCase();
+  const selected = filter.value;
+
+  const filtered = bookingData.filter(item => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(query) ||
+      item.service.toLowerCase().includes(query);
+
+    const matchesStatus =
+      selected === "All" || item.status === selected;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  bookings.innerHTML = "";
+
+  filtered.forEach(item => {
+    const row = document.createElement("tr");
+
+    [item.name, item.service, item.date].forEach(value => {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      row.appendChild(cell);
+    });
+
+    const statusCell = document.createElement("td");
+    const dropdown = document.createElement("select");
+    dropdown.className = "status";
+
+    ["Pending", "Confirmed", "Completed"].forEach(status => {
+      const option = document.createElement("option");
+      option.value = status;
+      option.textContent = status;
+      dropdown.appendChild(option);
+    });
+
+    dropdown.value = item.status;
+
+    dropdown.addEventListener("change", () => {
+      item.status = dropdown.value;
+      render();
+    });
+
+    statusCell.appendChild(dropdown);
+    row.appendChild(statusCell);
+    bookings.appendChild(row);
+  });
+
+  document.getElementById("total").textContent =
+    bookingData.length;
+
+  document.getElementById("pending").textContent =
+    bookingData.filter(b => b.status === "Pending").length;
+
+  document.getElementById("confirmed").textContent =
+    bookingData.filter(b => b.status === "Confirmed").length;
+
+  document.getElementById("message").textContent =
+    filtered.length ? "" : "No matching bookings found.";
+}
+
+search.addEventListener("input", render);
+filter.addEventListener("change", render);
+
+render();
+</script>
+
+</body>
+</html>
