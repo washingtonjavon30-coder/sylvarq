@@ -264,9 +264,8 @@ function render() {
 
   const filtered = bookingData.filter(item => {
     const matchesSearch =
-      item.name.toLowerCase().includes(query) ||
-      item.service.toLowerCase().includes(query);
-
+      String(item.name || "").toLowerCase().includes(query) ||
+      String(item.service || "").toLowerCase().includes(query);
     const matchesStatus =
       selected === "All" || item.status === selected;
 
