@@ -218,7 +218,34 @@ footer {
 </footer>
 
 <script>
-const bookingData = [
+
+window.SYLVARQ = function(data) {
+  const headers = data.headers.map(h => h.toLowerCase().trim());
+
+  const nameIndex = headers.indexOf("full name");
+  const serviceIndex = headers.indexOf("type of cleaning");
+  const dateIndex = headers.indexOf("preferred cleaning date");
+
+  bookingData = data.bookings.map(row => ({
+    name: row[nameIndex],
+    service: row[serviceIndex],
+    date: row[dateIndex],
+    status: "Pending"
+  }));
+
+  render();
+};
+
+
+
+
+const script = document.createElement("script");
+script.src = "https://script.google.com/macros/s/AKfycbyJ_aDlzVDYGI06KBPQbnaPrksGzuHo7ipY8QyYEXwjzC1dO3NfKLAdCfcB8Nm701q4hQ/exec?callback=SYLVARQ";
+document.head.appendChild(script);
+
+
+
+  let bookingData = [
   {
     name: "Demo Customer",
     service: "Deep Cleaning",
